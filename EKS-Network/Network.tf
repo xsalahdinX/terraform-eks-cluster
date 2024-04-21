@@ -11,16 +11,16 @@ resource "aws_vpc" "EKS_VPC" {
 resource "aws_subnet" "private_subnets" {
   for_each          = toset(var.private_ciders)
   vpc_id            = aws_vpc.EKS_VPC.id
-  availability_zone = var.az[each.key % length(var.az)]
+  availability_zone = element(var.az, length(var.private_ciders) % length(var.az))
   cidr_block        = each.key
   tags              = var.my_tags
-
 }
+
 
 resource "aws_subnet" "public_subnets" {
   for_each          = toset(var.public_ciders)
   vpc_id            = aws_vpc.EKS_VPC.id
-  availability_zone = var.az[each.key % length(var.az)]
+  availability_zone = element(var.az, length(each.key))
   cidr_block        = each.key
   tags              = var.my_tags
 
