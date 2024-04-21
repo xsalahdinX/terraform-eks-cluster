@@ -45,7 +45,7 @@ resource "aws_eip" "eip" {
 
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
   allocation_id = aws_eip.eip.id
-  subnet_id     = aws_subnet.public_subnets[0].id
+  subnet_id     = element(aws_subnet.public_subnets[*].id, 0)
   tags          = var.my_tags
   depends_on    = [aws_eip.eip]
 }
