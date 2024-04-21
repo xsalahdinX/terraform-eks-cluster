@@ -10,7 +10,12 @@ variable "private_ciders" {
   default     = ["10.0.1.0/24", "10.0.2.0/24"]
 
 }
+variable "az" {
+  description = "value of availability zones"
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b"]
 
+}
 variable "public_ciders" {
   description = "public subnets ciders"
   type        = list(string)
@@ -27,12 +32,7 @@ variable "my_tags" {
   }
 }
 
-variable "az" {
-  description = "value of availability zones"
-  type        = list(string)
-  default     = ["us-east-1a", "us-east-1b"]
 
-}
 
 
 variable "access_key" {
