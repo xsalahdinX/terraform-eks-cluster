@@ -10,7 +10,7 @@ resource "aws_vpc" "EKS_VPC" {
 resource "aws_subnet" "private_subnets" {
   for_each          = toset(var.private_ciders)
   vpc_id            = aws_vpc.EKS_VPC.id
-  availability_zone = locals.private_az_index
+  availability_zone = local.private_az_index
   cidr_block        = each.key
   tags              = merge({ "Name" : "private_subnets_${length(each.key)}" }, var.my_tags)
 }
@@ -19,7 +19,7 @@ resource "aws_subnet" "private_subnets" {
 resource "aws_subnet" "public_subnets" {
   for_each          = toset(var.public_ciders)
   vpc_id            = aws_vpc.EKS_VPC.id
-  availability_zone = locals.public_az_index
+  availability_zone = local.public_az_index
   cidr_block        = each.key
   tags              = merge({ "Name" : "public_subnets_${length(each.key)}" }, var.my_tags)
 
