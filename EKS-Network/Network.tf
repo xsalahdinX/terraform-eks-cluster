@@ -33,11 +33,6 @@ resource "aws_internet_gateway" "EKS_internet_gateway" {
   tags   = merge({ "Name" : "EKS_internet_gateway" }, var.my_tags)
 }
 
-resource "aws_internet_gateway_attachment" "EKS_internet_gateway_attachment" {
-  internet_gateway_id = aws_internet_gateway.EKS_internet_gateway.id
-  vpc_id              = aws_vpc.EKS_VPC.id
-}
-
 resource "aws_eip" "eip" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
@@ -58,7 +53,7 @@ resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.EKS_VPC.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.EKS_internet_gateway.id
+    gateway_id = aws_nat_gateway.EKS_Nat_gateway.id
   }
   tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
@@ -89,7 +84,7 @@ resource "aws_route_table_association" "private_route_table_association" {
 resource "aws_route_table_association" "public_route_table_association" {
   for_each       = aws_subnet.public_subnets
   subnet_id      = each.value.id
-  route_table_id = aws_route_table.private_route_table.id
+  route_table_id = aws_route_table.public_route_table.id
 }
 
 
