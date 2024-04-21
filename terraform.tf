@@ -7,6 +7,6 @@ module "EKS_Network" {
   private_ciders = ["10.0.1.0/24", "10.0.2.0/24", "10.0.8.0/24", "10.0.9.0/24"]
   public_ciders  = ["10.0.3.0/24", "10.0.4.0/24"]
   my_tags        = { "Owned" : "Salahdin" }
-  az             = ["us-east-1a", "us-east-1b"]
+  az             = ["us-east-1a", "us-east-1b", "us-east-1c"]
 
 }
