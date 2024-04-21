@@ -4,7 +4,7 @@ module "EKS_Network" {
   access_key     = var.access_key
   secret_key     = var.secret_key
   vpc_cider      = "10.0.0.0/16"
-  private_ciders = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_ciders = ["10.0.1.0/24", "10.0.2.0/24", "10.0.8.0/24", "10.0.9.0/24"]
   public_ciders  = ["10.0.3.0/24", "10.0.4.0/24"]
   my_tags        = { "Owned" : "Salahdin" }
   az             = ["us-east-1a", "us-east-1b"]
