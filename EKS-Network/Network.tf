@@ -7,12 +7,10 @@ resource "aws_vpc" "EKS_VPC" {
 
 
 #we use for_each to loop over the list of private ciders and then we use the each.key to refer to them 
-#we can use the element function to get the value of the list based on the index
-# % is the modulo operator, which ensures that the index stays within the bounds of the availability zones list. If the index exceeds the length of the availability zones list, it wraps around to the beginning.
 resource "aws_subnet" "private_subnets" {
   for_each          = toset(var.private_ciders)
   vpc_id            = aws_vpc.EKS_VPC.id
-  availability_zone = element(var.az, index(tolist(toset(var.private_ciders)), each.key) % length(var.az))
+  availability_zone = local.private_az_index
   cidr_block        = each.key
   tags              = merge({ "Name" : "private_subnets_${length(each.key)}" }, var.my_tags)
 }
@@ -21,7 +19,7 @@ resource "aws_subnet" "private_subnets" {
 resource "aws_subnet" "public_subnets" {
   for_each          = toset(var.public_ciders)
   vpc_id            = aws_vpc.EKS_VPC.id
-  availability_zone = element(var.az, index(tolist(toset(var.public_ciders)), each.key) % length(var.az))
+  availability_zone = local.public_az_index
   cidr_block        = each.key
   tags              = merge({ "Name" : "public_subnets_${length(each.key)}" }, var.my_tags)
 
