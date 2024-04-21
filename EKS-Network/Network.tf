@@ -24,7 +24,7 @@ resource "aws_subnet" "public_subnets" {
   vpc_id            = aws_vpc.EKS_VPC.id
   availability_zone = element(var.az, index(tolist(toset(var.public_ciders)), each.key) % length(var.az))
   cidr_block        = each.key
-  tags              = merge({ "Name" : "public_subnets_${length(each.key)}" }, var.my_tags)
+  tags              = merge({ "Name" : "public_subnets_${index(tolist(toset(var.public_ciders)), each.key)}" }, var.my_tags)
 
 }
 
