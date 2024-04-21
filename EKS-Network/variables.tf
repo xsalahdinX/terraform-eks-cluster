@@ -27,7 +27,6 @@ variable "my_tags" {
   description = "tags for Eks resources"
   type        = map(string)
   default = {
-    Name  = "EKS Resource"
     Owned = "Salahdin"
   }
 }
