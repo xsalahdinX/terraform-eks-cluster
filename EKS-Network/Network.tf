@@ -16,6 +16,7 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = element(var.az, index(tolist(toset(var.private_ciders)), each.key) % length(var.az))
   cidr_block        = each.key
   tags              = merge({ "Name" : "private_subnets_${index(tolist(toset(var.private_ciders)), each.key)}" }, var.my_tags)
+
 }
 
 
@@ -57,7 +58,8 @@ resource "aws_route_table" "private_route_table" {
     gateway_id = aws_nat_gateway.EKS_Nat_gateway.id
   }
   tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
-  depends_on = [aws_internet_gateway.EKS_internet_gateway]
+  depends_on = [aws_nat_gateway.EKS_Nat_gateway]
+
 }
 
 
@@ -69,8 +71,7 @@ resource "aws_route_table" "public_route_table" {
     gateway_id = aws_internet_gateway.EKS_internet_gateway.id
   }
   tags = merge({ "Name" : "EKS_public_route_table" }, var.my_tags)
-
-  depends_on = [aws_nat_gateway.EKS_Nat_gateway]
+  depends_on = [aws_internet_gateway.EKS_internet_gateway]
 }
 
 
