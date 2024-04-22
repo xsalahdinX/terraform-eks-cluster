@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "Eks_Cluster" {
 
   vpc_config {
     # subnet_ids = [aws_subnet.example1.id, aws_subnet.example2.id]
-    subnet_ids = module.EKS_Network.private_subnets_ids
+    subnet_ids = var.subnet_ids
     endpoint_private_access = true
     endpoint_public_access  = true
   }
