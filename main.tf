@@ -31,5 +31,5 @@ module "node_group_iam_role" {
   depends_on      = [module.EKS]
   instance_type   = "t3.medium"
   ami_type        = "AL2_x86_64"
-  my_tags        = { "Owned" : "Salahdin&Gamil"}
+  my_tags        = { "Owned" : "SalahdinandGamil"}
 }
