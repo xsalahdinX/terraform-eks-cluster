@@ -18,7 +18,6 @@ resource "aws_subnet" "private_subnets" {
   tags              = merge({ "Name" : "private_subnets_${index(tolist(toset(var.private_ciders)), each.key)}" }, var.my_tags)
 }
 
-
 resource "aws_subnet" "public_subnets" {
   for_each          = toset(var.public_ciders)
   vpc_id            = aws_vpc.EKS_VPC.id
@@ -72,8 +71,6 @@ resource "aws_route_table" "public_route_table" {
 
   depends_on = [aws_nat_gateway.EKS_Nat_gateway]
 }
-
-
 
 
 resource "aws_route_table_association" "private_route_table_association" {
