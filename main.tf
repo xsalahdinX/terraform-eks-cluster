@@ -20,7 +20,9 @@ module "EKS" {
 }
 
 
-module "node_group_iam_role" {
+
+
+module "node_group" {
   source          = "./Nodegroup"
   cluster_name    = module.EKS.cluster_name
   node_group_name = "eks_node_group"
@@ -32,4 +34,14 @@ module "node_group_iam_role" {
   instance_type   = "t3.medium"
   ami_type        = "AL2_x86_64"
   my_tags        = { "Owned" : "SalahdinandGamil"}
+}
+
+
+
+
+module "Addons" {
+  source = "./Addons"
+  cluster_name = module.EKS.cluster_name
+  my_tags = { "Owned" : "SalahdinandGamil"}
+  depends_on = [module.node_group]
 }
