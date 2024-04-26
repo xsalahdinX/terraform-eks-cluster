@@ -43,5 +43,5 @@ module "Addons" {
   source = "./Addons"
   cluster_name = module.EKS.cluster_name
   my_tags = { "Owned" : "SalahdinandGamil"}
-  depends_on = [module.node_group]
-}
+  depends_on = [module.EKS]
+  }
