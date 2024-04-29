@@ -36,3 +36,7 @@ output "cluster_name" {
   value = aws_eks_cluster.Eks_Cluster.name
   
 }
+
+output "cluster_arn" {
+  value = aws_eks_cluster.Eks_Cluster.arn 
+}
