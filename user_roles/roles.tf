@@ -12,7 +12,7 @@ resource "aws_iam_role" "eks_access_role" {
         {
             "Effect": "Allow",
             "Principal": {
-                "AWS": "aws_iam_user.eks_user.arn"
+                "AWS": "${aws_iam_user.eks_user.arn}"
             },
             "Action": "sts:AssumeRole"
         }
@@ -30,7 +30,7 @@ resource "aws_iam_policy" "eks_access_policy" {
   "Statement": [
       {
           "Effect": "Allow",
-          "Resource": "var.cluster_arn",
+          "Resource": "${var.cluster_arn}",
           "Action": "eks:DescribeCluster"
       }
   ]
