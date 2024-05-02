@@ -4,11 +4,11 @@ resource "helm_release" "aws_auth" {
 
   set {
     name   = "accountId"
-    value = "${output.account_id}"
+    value = "${local.account_id}"
  }
   set {
     name   = "nodegroup_role_arn"
-    value = "arn:aws:iam::${output.account_id}:role/node-group-role"
+    value = "arn:aws:iam::${local.account_id}:role/node-group-role"
  }
 
 }
