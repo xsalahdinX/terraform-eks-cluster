@@ -58,5 +58,4 @@ module "aws_auth" {
   cluster_name = module.EKS.cluster_name
   cluster_ca_certificate = module.EKS.kubeconfig-certificate-authority-data
   host = module.EKS.endpoint
-  depends_on = [module.EKS]
 }
