@@ -1,3 +1,5 @@
 nodegroup_role_arn: [arn:aws:iam::381492045908:role/node-group-role]
 iam_admin_roles: [eks_access_role]
 accountId: "381492045908"
+
+
