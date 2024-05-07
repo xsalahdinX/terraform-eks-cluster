@@ -59,4 +59,7 @@ module "aws_auth" {
   cluster_ca_certificate = module.EKS.kubeconfig-certificate-authority-data
   host = module.EKS.endpoint
   depends_on = [ module.cluser_role ]
+  providers = {
+  helm = helm.helm_release
+}
 }
