@@ -53,10 +53,10 @@ module "cluser_role" {
   depends_on = [module.EKS]  
 }
 
-module "aws_auth" {
-  source = "./aws-auth"
-  cluster_name = module.EKS.cluster_name
-  cluster_ca_certificate = module.EKS.kubeconfig-certificate-authority-data
-  host = module.EKS.endpoint
-  token = module.EKS.token
-}
+# module "aws_auth" {
+#   source = "./aws-auth"
+#   cluster_name = module.EKS.cluster_name
+#   cluster_ca_certificate = module.EKS.kubeconfig-certificate-authority-data
+#   host = module.EKS.endpoint
+#   token = module.EKS.token
+# }
