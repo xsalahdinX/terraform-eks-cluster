@@ -13,7 +13,7 @@ module "EKS_Network" {
 
 module "EKS" {
     source = "./EKS"
-    cluster_name = "eks_cluster"
+    cluster_name = "eks"
     cluster_version = "1.28"
     subnet_ids = module.EKS_Network.private_subnets_ids
     depends_on = [ module.EKS_Network ]
@@ -52,10 +52,3 @@ module "cluser_role" {
   username = "gamil"
   depends_on = [module.EKS]  
 }
-
-# module "aws_auth" {
-#   source = "./aws-auth"
-#   cluster_name = module.EKS.cluster_name
-#   cluster_ca_certificate = module.EKS.kubeconfig-certificate-authority-data
-#   host = module.EKS.endpoint
-# }
