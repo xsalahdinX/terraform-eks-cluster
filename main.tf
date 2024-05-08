@@ -25,7 +25,7 @@ module "EKS" {
 module "node_group" {
   source          = "./Nodegroup"
   cluster_name    = module.EKS.cluster_name
-  node_group_name = "eks_node_group"
+  node_group_name = "eksnodegroup"
   subnet_ids      = module.EKS_Network.private_subnets_ids
   desired_size    = 2
   max_size        = 3
