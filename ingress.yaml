@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: workloads-internet-alb
+    alb.ingress.kubernetes.io/load-balancer-name: workloads-internet-alb
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /testpath
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-svc
+            port:
+              number: 80

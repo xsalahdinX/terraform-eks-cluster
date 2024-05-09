@@ -15,7 +15,7 @@ resource "aws_subnet" "private_subnets" {
   vpc_id            = aws_vpc.EKS_VPC.id
   availability_zone = element(var.az, index(tolist(toset(var.private_ciders)), each.key) % length(var.az))
   cidr_block        = each.key
-  tags              = merge({ "Name" : "private_subnets_${index(tolist(toset(var.private_ciders)), each.key)}" }, var.my_tags)
+  tags              = merge({ "kubernetes.io/role/internal-elb" : "1" , "Name" : "private_subnets_${index(tolist(toset(var.private_ciders)), each.key)}" }, var.my_tags)
 }
 
 resource "aws_subnet" "public_subnets" {
@@ -23,7 +23,7 @@ resource "aws_subnet" "public_subnets" {
   vpc_id            = aws_vpc.EKS_VPC.id
   availability_zone = element(var.az, index(tolist(toset(var.public_ciders)), each.key) % length(var.az))
   cidr_block        = each.key
-  tags              = merge({ "Name" : "public_subnets_${index(tolist(toset(var.public_ciders)), each.key)}" }, var.my_tags)
+  tags              = merge({ "kubernetes.io/role/elb" : "1", "Name" : "public_subnets_${index(tolist(toset(var.public_ciders)), each.key)}" }, var.my_tags)
 
 }
 
