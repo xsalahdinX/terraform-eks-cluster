@@ -23,6 +23,16 @@ resource "aws_eks_cluster" "Eks_Cluster" {
   ]
 }
 
+resource "aws_iam_openid_connect_provider" "eks-cluster-oidc" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [aws_eks_cluster.Eks_Cluster.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.Eks_Cluster.identity[0].oidc[0].issuer
+}
+
+
+
+
+
 
 output "endpoint" {
   value = aws_eks_cluster.Eks_Cluster.endpoint
