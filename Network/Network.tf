@@ -39,25 +39,11 @@ resource "aws_eip" "eip" {
   count = length(var.public_ciders)
 }
 
-# we use values function to get the values of the map and then we use element function to get the first value of the list
-# resource "aws_nat_gateway" "EKS_Nat_gateway" {
-#   allocation_id = aws_eip.eip.id
-#   subnet_id     = element(values(aws_subnet.public_subnets)[*].id, 0)
-#   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
-#   depends_on    = [aws_eip.eip]
-# }
 
-# resource "aws_nat_gateway" "EKS_Nat_gateway" {
-#   for_each      = toset(aws_subnet.public_subnets)
-#   allocation_id = element(aws_eip.eip.id, each.key % length(aws_eip.eip.id))
-#   subnet_id     = each.value.id
-#   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
-#   depends_on    = [aws_eip.eip]
-# }
 # NAT Gateway configuration
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
   for_each = aws_subnet.public_subnets
-  allocation_id = aws_eip.eip[each.key % length(aws_eip.eip)].id
+  allocation_id = aws_eip.eip[each.key].id
   subnet_id     = each.value.id
   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
   depends_on    = [aws_eip.eip]
