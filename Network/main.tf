@@ -1,9 +1,15 @@
+/**
+ * # Network.
+ *
+ * Network use to operate Eks.
+ */
+
+
 resource "aws_vpc" "EKS_VPC" {
   cidr_block           = var.vpc_cider
   enable_dns_hostnames = true
   tags                 = merge({ "Name" : "EKS_VPC" }, var.my_tags)
 }
-
 
 #we use for_each to loop over the list of private ciders and then we use the each.key to refer to them 
 #toset() function is used to convert a list to a set insure unique values
@@ -33,6 +39,8 @@ resource "aws_internet_gateway" "EKS_internet_gateway" {
 }
 
 resource "aws_eip" "eip" {
+  for_each = aws_subnet.public_subnets
+
   domain     = "vpc"
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
   tags       = merge({ "Name" : "EKS_eip" }, var.my_tags)
@@ -43,7 +51,7 @@ resource "aws_eip" "eip" {
 # NAT Gateway configuration
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
   for_each = aws_subnet.public_subnets
-  allocation_id = aws_eip.eip[index(aws_subnet.public_subnets.ids, each.value.id)].id
+  allocation_id = aws_eip.eip[index(aws_subnet.public_subnets.id, each.value.id)].id
   subnet_id     = each.value.id
   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
   depends_on    = [aws_eip.eip]
@@ -55,13 +63,10 @@ resource "aws_nat_gateway" "EKS_Nat_gateway" {
 
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.EKS_VPC.id
-
-  dynamic "route" {
-    for_each = aws_nat_gateway.EKS_Nat_gateway
-    content {
+  for_each = aws_nat_gateway.EKS_Nat_gateway
+ route {
       cidr_block = "0.0.0.0/0"
       gateway_id = each.value.id
-    }
   }
 
   tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
