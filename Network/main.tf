@@ -39,8 +39,6 @@ resource "aws_internet_gateway" "EKS_internet_gateway" {
 }
 
 resource "aws_eip" "eip" {
-  for_each = aws_subnet.public_subnets
-
   domain     = "vpc"
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
   tags       = merge({ "Name" : "EKS_eip" }, var.my_tags)
