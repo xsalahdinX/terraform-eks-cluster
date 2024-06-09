@@ -74,6 +74,7 @@ resource "aws_nat_gateway" "EKS_Nat_gateway" {
 
 
 
+
 locals {
   nat_gateway_ids = [for gateway in aws_nat_gateway.EKS_Nat_gateway : gateway.id]
 }
@@ -81,7 +82,7 @@ locals {
 resource "aws_route_table" "private_route_table" {
   for_each = { for idx, id in local.nat_gateway_ids : id => idx }
 
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.EKS_VPC.id
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -91,7 +92,6 @@ resource "aws_route_table" "private_route_table" {
   tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
 }
-
 
 
 resource "aws_route_table" "public_route_table" {
