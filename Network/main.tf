@@ -84,9 +84,9 @@ resource "aws_route_table" "private_route_table" {
 
 resource "aws_route" "private_route" {
   for_each = aws_route_table.private_route_table
-  route_table_id            = aws_route_table.private_route_table[count.index].id
+  route_table_id            = each.value.id
   destination_cidr_block    = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.EKS_Nat_gateway[count.index].id
+  nat_gateway_id = aws_nat_gateway.EKS_Nat_gateway[each.value].id
 }
 
 
