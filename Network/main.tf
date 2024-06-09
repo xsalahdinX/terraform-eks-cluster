@@ -47,13 +47,13 @@ resource "aws_internet_gateway" "EKS_internet_gateway" {
 
 
 # NAT Gateway configuration
-# resource "aws_nat_gateway" "EKS_Nat_gateway" {
-#   for_each = aws_subnet.public_subnets
-#   allocation_id = aws_eip.eip[index(keys(aws_subnet.public_subnets), each.key)].id
-#   subnet_id     = each.value.id
-#   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
-#   depends_on    = [aws_eip.eip]
-# }
+resource "aws_nat_gateway" "EKS_Nat_gateway" {
+  for_each = aws_subnet.public_subnets
+  allocation_id = aws_eip.eip[index(keys(aws_subnet.public_subnets), each.key)].id
+  subnet_id     = each.value.id
+  tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
+  depends_on    = [aws_eip.eip]
+}
 
 
 
@@ -76,7 +76,7 @@ resource "aws_nat_gateway" "EKS_Nat_gateway" {
 
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.EKS_VPC.id
-  for_each = aws_nat_gateway.EKS_Nat_gateway
+  for_each =  {for id in aws_nat_gateway.EKS_Nat_gateway : id.id => id }
  route {
       cidr_block = "0.0.0.0/0"
       gateway_id = each.value.id
