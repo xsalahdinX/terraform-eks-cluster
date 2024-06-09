@@ -76,7 +76,7 @@ resource "aws_nat_gateway" "EKS_Nat_gateway" {
 
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.EKS_VPC.id
-  for_each = values(aws_nat_gateway.EKS_Nat_gateway)[*].id
+  for_each = values(aws_nat_gateway.EKS_Nat_gateway.id)
  route {
       cidr_block = "0.0.0.0/0"
       gateway_id = each.value
