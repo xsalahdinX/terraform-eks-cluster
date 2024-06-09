@@ -5,4 +5,5 @@ module "EKS_Network" {
   public_ciders  = ["10.0.3.0/24", "10.0.4.0/24"]
   my_tags        = { "Owned" : "Salahdin&Gamil"}
   az             = ["us-east-1a", "us-east-1b"]
+  nat_gateways_count = 2
 }
