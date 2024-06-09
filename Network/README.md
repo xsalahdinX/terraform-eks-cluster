@@ -3,12 +3,9 @@
 # Network.
 
 Network use to operate Eks.
-## Modules
 
-No modules.
-
+##  Modules
 Network Module
-
 ```hcl
 module "EKS_Network" {
   source         = "./Network"
@@ -19,6 +16,7 @@ module "EKS_Network" {
   az             = ["us-east-1a", "us-east-1b"]
 }
 ```
+
 ## Providers
 
 | Name | Version |

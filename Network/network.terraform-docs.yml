@@ -7,8 +7,8 @@ footer-from: ""
 
 recursive:
   enabled: false
-  path: modules
-  include-main: true
+  path: ""
+  include-main: false
 
 sections:
   hide: []
@@ -17,13 +17,13 @@ sections:
 content: |-
 
   {{ .Header }}
-  {{ .Modules }}
 
+  ##  Modules
   Network Module
-
   ```hcl
   {{ include "./../Network.tf" }}
   ```
+  
   {{ .Providers }}
   {{ .Resources }}
   {{ .Inputs }}
