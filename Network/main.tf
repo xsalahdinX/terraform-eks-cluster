@@ -38,24 +38,39 @@ resource "aws_internet_gateway" "EKS_internet_gateway" {
   tags   = merge({ "Name" : "EKS_internet_gateway" }, var.my_tags)
 }
 
+# resource "aws_eip" "eip" {
+#   domain     = "vpc"
+#   depends_on = [aws_internet_gateway.EKS_internet_gateway]
+#   tags       = merge({ "Name" : "EKS_eip" }, var.my_tags)
+#   count = length(var.public_ciders)
+# }
+
+
+# NAT Gateway configuration
+# resource "aws_nat_gateway" "EKS_Nat_gateway" {
+#   for_each = aws_subnet.public_subnets
+#   allocation_id = aws_eip.eip[index(keys(aws_subnet.public_subnets), each.key)].id
+#   subnet_id     = each.value.id
+#   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
+#   depends_on    = [aws_eip.eip]
+# }
+
+
+
 resource "aws_eip" "eip" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
   tags       = merge({ "Name" : "EKS_eip" }, var.my_tags)
-  count = length(var.public_ciders)
+  count = var.nat_gateways_count
 }
 
-
-# NAT Gateway configuration
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
-  for_each = aws_subnet.public_subnets
-  allocation_id = aws_eip.eip[index(keys(aws_subnet.public_subnets), each.key)].id
-  subnet_id     = each.value.id
+  count = var.nat_gateways_count
+  allocation_id = aws_eip.eip[count.index].id
+  subnet_id     = aws_subnet.public_subnets[count.index].id
   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
   depends_on    = [aws_eip.eip]
 }
-
-
 
 
 
@@ -89,7 +104,7 @@ resource "aws_route_table" "public_route_table" {
 resource "aws_route_table_association" "private_route_table_association" {
   for_each       = aws_subnet.private_subnets
   subnet_id      = each.value.id 
-  route_table_id = aws_route_table.private_route_table[each.key].id
+  route_table_id = aws_route_table.private_route_table[index(keys(aws_subnet.private_subnets), each.key) % length(var.nat_gateways_count)].id
 }
 
 resource "aws_route_table_association" "public_route_table_association" {

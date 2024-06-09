@@ -30,3 +30,9 @@ variable "my_tags" {
     Owned = "Salahdin"
   }
 }
+
+variable "nat_gateways_count" {
+  description = "number of nat gateways"
+  type        = number
+  default     = 2
+}
