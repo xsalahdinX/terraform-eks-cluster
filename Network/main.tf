@@ -66,6 +66,12 @@ resource "aws_route" "private_route" {
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.EKS_Nat_gateway[count.index].id
 }
+resource "aws_route_table_association" "private_route_table_association" {
+  for_each       = aws_subnet.private_subnets
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.private_route_table[index(keys(aws_subnet.private_subnets), each.key) % var.nat_gateways_count].id
+}
+
 
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.EKS_VPC.id
@@ -80,11 +86,6 @@ resource "aws_route" "public_route" {
   gateway_id             = aws_internet_gateway.EKS_internet_gateway.id
 }
 
-resource "aws_route_table_association" "private_route_table_association" {
-  for_each       = aws_subnet.private_subnets
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.private_route_table[index(keys(aws_subnet.private_subnets), each.key) % var.nat_gateways_count].id
-}
 
 resource "aws_route_table_association" "public_route_table_association" {
   for_each       = aws_subnet.public_subnets
@@ -92,6 +93,4 @@ resource "aws_route_table_association" "public_route_table_association" {
   route_table_id = aws_route_table.public_route_table.id
 }
 
-output "private_subnets_ids" {
-  value = values(aws_subnet.private_subnets)[*].id
-}
+
