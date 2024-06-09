@@ -21,7 +21,7 @@ resource "aws_subnet" "private_subnets" {
   vpc_id            = aws_vpc.EKS_VPC.id
   availability_zone = element(var.az, index(tolist(toset(var.private_ciders)), each.key) % length(var.az))
   cidr_block        = each.key
-  tags              = merge({ "kubernetes.io/role/internal-elb" : "1" , "Name" : "private_subnets_${index(tolist(toset(var.private_ciders)), each.key)}" }, var.my_tags)
+  tags              = merge({ "kubernetes.io/role/internal-elb" : "1", "Name" : "private_subnets_${index(tolist(toset(var.private_ciders)), each.key)}" }, var.my_tags)
 }
 
 resource "aws_subnet" "public_subnets" {
@@ -61,11 +61,11 @@ resource "aws_eip" "eip" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
   tags       = merge({ "Name" : "EKS_eip" }, var.my_tags)
-  count = var.nat_gateways_count
+  count      = var.nat_gateways_count
 }
 
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
-  count = var.nat_gateways_count
+  count         = var.nat_gateways_count
   allocation_id = aws_eip.eip[count.index].id
   subnet_id     = values(aws_subnet.public_subnets)[count.index].id
   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
@@ -76,17 +76,17 @@ resource "aws_nat_gateway" "EKS_Nat_gateway" {
 
 
 resource "aws_route_table" "private_route_table" {
-  count = var.nat_gateways_count
-  vpc_id  = aws_vpc.EKS_VPC.id
+  count      = var.nat_gateways_count
+  vpc_id     = aws_vpc.EKS_VPC.id
   tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
   depends_on = [aws_internet_gateway.EKS_internet_gateway]
 }
 
 resource "aws_route" "private_route" {
-  for_each = aws_route_table.private_route_table
-  route_table_id            = each.value.id
-  destination_cidr_block    = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.EKS_Nat_gateway[each.value].id
+  count                  = var.nat_gateways_count
+  route_table_id         = aws_route_table.private_route_table[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.EKS_Nat_gateway[count.index].id
 }
 
 
@@ -106,7 +106,7 @@ resource "aws_route_table" "public_route_table" {
 
 resource "aws_route_table_association" "private_route_table_association" {
   for_each       = aws_subnet.private_subnets
-  subnet_id      = each.value.id 
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.private_route_table[index(keys(aws_subnet.private_subnets), each.key) % var.nat_gateways_count].id
 }
 
