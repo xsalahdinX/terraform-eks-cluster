@@ -48,7 +48,7 @@ resource "aws_eip" "eip" {
 
 # NAT Gateway configuration
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
-  for_each = aws_subnet.public_subnets.id 
+  for_each = aws_subnet.public_subnets
   allocation_id = aws_eip.eip[index(keys(aws_subnet.public_subnets), each.key)].id
   subnet_id     = each.value.id
   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
