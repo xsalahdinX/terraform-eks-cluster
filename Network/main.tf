@@ -59,30 +59,30 @@ resource "aws_nat_gateway" "EKS_Nat_gateway" {
 
 
 
-# resource "aws_route_table" "private_route_table" {
-#   vpc_id = aws_vpc.EKS_VPC.id
-#   for_each = aws_nat_gateway.EKS_Nat_gateway
-#  route {
-#       cidr_block = "0.0.0.0/0"
-#       gateway_id = each.value.id
-#   }
+resource "aws_route_table" "private_route_table" {
+  vpc_id = aws_vpc.EKS_VPC.id
+  for_each = aws_nat_gateway.EKS_Nat_gateway
+ route {
+      cidr_block = "0.0.0.0/0"
+      gateway_id = each.value.id
+  }
 
-#   tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
-#   depends_on = [aws_internet_gateway.EKS_internet_gateway]
-# }
+  tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
+  depends_on = [aws_internet_gateway.EKS_internet_gateway]
+}
 
 
 
-# resource "aws_route_table" "public_route_table" {
-#   vpc_id = aws_vpc.EKS_VPC.id
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     gateway_id = aws_internet_gateway.EKS_internet_gateway.id
-#   }
-#   tags = merge({ "Name" : "EKS_public_route_table" }, var.my_tags)
+resource "aws_route_table" "public_route_table" {
+  vpc_id = aws_vpc.EKS_VPC.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.EKS_internet_gateway.id
+  }
+  tags = merge({ "Name" : "EKS_public_route_table" }, var.my_tags)
 
-#   depends_on = [aws_nat_gateway.EKS_Nat_gateway]
-# }
+  depends_on = [aws_nat_gateway.EKS_Nat_gateway]
+}
 
 
 
