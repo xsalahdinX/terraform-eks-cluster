@@ -74,12 +74,14 @@ resource "aws_nat_gateway" "EKS_Nat_gateway" {
 
 
 
+
 resource "aws_route_table" "private_route_table" {
-  vpc_id = aws_vpc.EKS_VPC.id
-  for_each =  {for id in aws_nat_gateway.EKS_Nat_gateway : id.id => id }
- route {
-      cidr_block = "0.0.0.0/0"
-      gateway_id = each.value.id
+  vpc_id  = aws_vpc.EKS_VPC.id
+  for_each = { for idx, nat_gw in aws_nat_gateway.EKS_Nat_gateway : nat_gw.id => nat_gw }
+
+  route {
+    cidr_block  = "0.0.0.0/0"
+    gateway_id  = each.value.id
   }
 
   tags       = merge({ "Name" : "EKS_private_route_table" }, var.my_tags)
