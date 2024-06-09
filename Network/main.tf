@@ -48,9 +48,9 @@ resource "aws_eip" "eip" {
 
 # NAT Gateway configuration
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
-  for_each = aws_subnet.public_subnets
-  allocation_id = aws_eip.eip[each.value.id].id
-  subnet_id     = each.value.id
+  for_each = toset(aws_subnet.public_subnets.id)
+  allocation_id = aws_eip.eip[index(aws_subnet.public_subnets[*].id , each.value)].id
+  subnet_id     = each.value
   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
   depends_on    = [aws_eip.eip]
 }
@@ -88,8 +88,8 @@ resource "aws_route_table" "public_route_table" {
 
 resource "aws_route_table_association" "private_route_table_association" {
   for_each       = aws_subnet.private_subnets
-  subnet_id      = each.value.id
-  route_table_id = aws_route_table.private_route_table[each.value.id].id
+  subnet_id      = each.value.id 
+  route_table_id = aws_route_table.private_route_table[].id
 }
 
 resource "aws_route_table_association" "public_route_table_association" {
