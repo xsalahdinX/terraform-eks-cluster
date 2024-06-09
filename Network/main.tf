@@ -67,7 +67,7 @@ resource "aws_eip" "eip" {
 resource "aws_nat_gateway" "EKS_Nat_gateway" {
   count = var.nat_gateways_count
   allocation_id = aws_eip.eip[count.index].id
-  subnet_id     = element(values(aws_subnet.public_subnets[*].id), count.index)
+  subnet_id     = values(aws_subnet.public_subnets)[count.index].id
   tags          = merge({ "Name" : "EKS_Nat_gateway" }, var.my_tags)
   depends_on    = [aws_eip.eip]
 }
