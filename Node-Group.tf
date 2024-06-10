@@ -1,5 +1,5 @@
 module "node_group" {
-  source          = "./Nodegroup"
+  source          = "github.com/xsalahdinX/terraform-modules//Nodegroup"
   cluster_name    = module.EKS.cluster_name
   node_group_name = "eksnodegroup"
   subnet_ids      = module.EKS_Network.private_subnets_ids
